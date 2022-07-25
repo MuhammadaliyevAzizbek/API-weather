@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/main.css" />
+    <title>My Weather</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="box">
+        <section class="location">
+          <div class="city">Country | Region | City</div>
+          <div class="date">Weekday | 05 Aprel 2022</div>
+        </section>
+        <div class="currently">
+          <div class="temp">20<span>°C</span></div>
+          <div class="weather">Hot</div>
+        </div>
+        <header class="header">
+          <input
+            type="text"
+            class="input"
+            autocomplete="off"
+            placeholder="Qat kere...."
+          />
+        </header>
+      </div>
+    </div>
+
+    <script>
+      const api = {
+        baseurl: " http://api.weatherapi.com/v1/",
+        key: "f6d224ac973f45bfb7994942222305",
+      };
+
+      const box = document.querySelector(".input");
+      box.addEventListener("keypress", setWeather);
+
+      function setWeather(e) {
+        if (e.keyCode == 13) getWeather(box.value);
+      }
+
+      function getWeather(query) {
+        fetch(`${api.baseurl}current.json?key=${api.key}&q=${query}`)
+          .then((weather) => {
+            return weather.json();
+          })
+          .then(displayWiew);
+      }
+
+      function displayWiew(weather) {
+        const city = document.querySelector(".city");
+        city.innerHTML = `${weather.location.country}, ${weather.location.region}, ${weather.location.name}`;
+
+        const weekday = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wendesday",
+          "Thrusday",
+          "Friday",
+          "Saturday",
+        ];
+
+        const d = new Date();
+        let day = weekday[d.getDay()];
+
+        const date = document.querySelector(".date");
+        date.innerHTML = `${weather.current.last_updated}, ${day}`;
+
+        const temp = document.querySelector(".temp");
+        temp.innerHTML = `${weather.current.temp_c}<img src= "${weather.current.condition.icon}">`;
+      }
+    </script>
+  </body>
+  <script src="js/main.js"></script>
+</html>
